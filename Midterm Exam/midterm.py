@@ -58,9 +58,9 @@ print("\n-----------------Question 2 part 2--------------------\n")
 
 def readNextLine():
 	listOfFiles = ['poem.txt','poem2.txt']
-	count = 0
 	for arg in listOfFiles:
 		fil_name = arg
+		count = 0
 		print("------------{0}-------------".format(arg))
 		try:
 			with open(fil_name,'r') as op_file:
@@ -73,6 +73,7 @@ def readNextLine():
 							print("Line{}: {}".format(count, line.strip()))
 						else:
 							print("you typed some text before pressing enter")
+							break
 					except ValueError:
 						print("Invalid entry please only enter")
 		except IOError:
@@ -87,9 +88,10 @@ print("\n-----------------Question 2 part 3--------------------\n")
 
 def readNextLine():
 	listOfFiles = ['poem.txt','poem2.txt']
-	count = 0
 	for arg in listOfFiles:
+		count = 0
 		fil_name = arg
+		print("------------{0}-------------".format(arg))
 		try:
 			with open(fil_name,'r') as op_file:
 				lines = op_file.readlines()
@@ -113,7 +115,6 @@ def readNextLine2():
 	count1 = 0
 	fil_name = listOfFiles[0]
 	fil_name1 = listOfFiles[1]
-	print("------------{0}-------------".format(arg))
 	try:
 		with open(fil_name,'r') as op_file:
 			with open(fil_name1,'r') as op_file1:
@@ -124,10 +125,16 @@ def readNextLine2():
 						text = input("Please press number to read next line:")
 						if text == "1":
 							count += 1
-							print("Poem1.txt: Line{}: {}".format(count, lines[count]))
+							if count < len(lines):
+								print("Poem1.txt: Line{}: {}".format(count, lines[count]))
+							else:
+								print("Poem1.txt: No more lines left to print")
 						elif text == "2":
 							count1 += 1
-							print("Poem2.txt: Line{}: {}".format(count1, lines2[count1]))
+							if count1 < len(lines2):
+								print("Poem2.txt: Line{}: {}".format(count1, lines2[count1]))
+							else:
+								print("Poem2.txt: No more lines left to print")
 						else:
 							print("you typed some  different text before pressing enter")
 							break
@@ -143,10 +150,10 @@ readNextLine2()
 
 print("\n-----------------Question 2 part 5--------------------\n")
 
-data = data2 = "" 
+data = "" 
 
 with open('Poem2.txt') as fp: 
-    data = fp.read() 
+    data = "\n" + fp.read() 
   
 
 data += "\n"
@@ -173,4 +180,4 @@ print("\n-----------------Question 3 part 3--------------------\n")
 
 tu = ( 2, 123.4567, 10000, 12345.67)
 
-print("'file_002: {:.2f} {:.2e} {:.2e}".format(tu[1],tu[2],tu[3]))
+print("'file_{:03}: {:.2f} {:.2e} {:.2e}".format(tu[0],tu[1],tu[2],tu[3]))
