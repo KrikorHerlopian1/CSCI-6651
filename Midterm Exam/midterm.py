@@ -5,6 +5,7 @@
 # Created Date: Wed March 03 2021
 # Email Address: kherl1@unh.newhaven.edu
 # =============================================================================
+import time 
 
 print("\n-----------------Question 1--------------------\n")
 
@@ -89,16 +90,16 @@ print("\n-----------------Question 2 part 3--------------------\n")
 def readNextLine():
 	listOfFiles = ['poem.txt','poem2.txt']
 	for arg in listOfFiles:
-		count = 0
 		fil_name = arg
 		print("------------{0}-------------".format(arg))
 		try:
 			with open(fil_name,'r') as op_file:
 				lines = op_file.readlines()
 				for line in lines:
-					count += 1
-					print("Line{}: {}".format(count, line.strip()))
-					print("\n")
+					print("")
+					for m in line.strip():
+						print(m, end='', flush=True)
+						time.sleep(.25)
 		except IOError:
 			print("Can't Open ", fil_name)
 
