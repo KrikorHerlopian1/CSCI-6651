@@ -16,7 +16,7 @@ def search(txt):
 	except IOError:
 		print("Can't Open ", fil_name)
 	i = 0
-	change_to_upper = " " + txt + " "
+	change_to_upper = txt
 	
 	# this will return line number, plust the line if the text we search for is in sentence
 	#for i,line in enumerate(lines,i) if txt in line
@@ -24,12 +24,12 @@ def search(txt):
 
 
 	# one way of doing	
-	lst = [(a, re.sub(change_to_upper, change_to_upper.upper(), word) ) for a,word in [(i, line) for i,line in enumerate(lines,i) if txt in line.split()  ]]
+	lst = [ (i, re.sub(change_to_upper, change_to_upper.upper(), line))  for i,line in enumerate(lines,i) if txt in line.split()  ]
 	#for a,b in lst:
 	#	print(a , b)
 		
 	# another way just automatically print.
-	[print(a, '-', re.sub(change_to_upper, change_to_upper.upper(), word), end='' ) for a, word in [(i, line) for i,line in enumerate(lines,i) if txt in line.split() ]]
+	[print(i, '-', re.sub(change_to_upper, change_to_upper.upper(), line) ,end ='') for i,line in enumerate(lines,i) if txt in line.split() ]
 	
 	return lst
 		
