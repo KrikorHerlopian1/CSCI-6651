@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# =============================================================================
+# Created By  : Krikor Herlopian
+# Created Date: Fri April 9 2021
+# Email Address: kherl1@unh.newhaven.edu
+# =============================================================================
+
+
 import json
 from urllib.request import urlopen
 from urllib.parse import urlencode
