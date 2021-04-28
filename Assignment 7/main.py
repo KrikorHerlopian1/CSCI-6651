@@ -88,6 +88,7 @@ class AddModifyPatientDialog:
 		else:
 			self.f1.grid(row=3, column = 1)
 		
+	#in case user clicked the X button on top side. Notify him that changes he updated will be lost. Instead he should click close button for updated changes to take effect
 	def on_closing(self):
 		if mbox.askokcancel("Quit", "Are you sure you want to quit? All new or updated changes will be lost?"):
 			self.top.destroy()
