@@ -24,15 +24,15 @@ def center_window(root,width=200, height=150):
     y = (screen_height/2) - (height/2)
     root.geometry('%dx%d+%d+%d' % (width, height, x, y))
 
-def valid_date(self,inputDate):
+def valid_date(inputDate):
 	"""
 		Check if date is valid. If its valid return true, else return false
 	"""
-	day,month,year = inputDate.split('/')
 	isValidDate = True
-	try :
+	try:
+		day,month,year = inputDate.split('/')
 		datetime.datetime(int(year),int(month),int(day))
-	except ValueError :
+	except:
 		isValidDate = False
 	if(isValidDate) :
 		return True
