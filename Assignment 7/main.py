@@ -22,6 +22,8 @@ class AddModifyPatientDialog:
 	def __init__(self, parent,modify=False):
 		global lst_of_patients
 		top = self.top = Toplevel(parent)
+		#in case user clicks the top right X button to close, call on_closing function
+		top.protocol("WM_DELETE_WINDOW", self.on_closing)
 		#set background color
 		top.configure(background=bg_color)
 		#copy of list of patients, when modifying we want to modify the copy up until user clicks close.
@@ -86,6 +88,9 @@ class AddModifyPatientDialog:
 		else:
 			self.f1.grid(row=3, column = 1)
 		
+	def on_closing(self):
+		if mbox.askokcancel("Quit", "Are you sure you want to quit? All new or updated changes will be lost?"):
+			self.top.destroy()
 		
 	#modify button clicked, modify in lst_of_patients copy and then when the close button is clicked update initial lst_of_patients and udpate main UI.
 	def modify(self):
