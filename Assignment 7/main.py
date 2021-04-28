@@ -24,7 +24,9 @@ class AddModifyPatientDialog:
 		top = self.top = Toplevel(parent)
 		#set background color
 		top.configure(background=bg_color)
+		#copy of list of patients, when modifying we want to modify the copy up until user clicks close.
 		self.lst_of_patients_copy = copy.deepcopy(lst_of_patients)
+		#when modifying, modifications starts from index 0. Top of the list.
 		self.index = 0
 		#center dialog on screen, a little bit more height if modifying ( for previous and next buttons). Also set the title whether modify patient or add patient.
 		if modify:
