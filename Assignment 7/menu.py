@@ -14,6 +14,7 @@ import json
 import os
 import functions as func
 import patient as patient
+
 __author__ = "Krikor Herlopian"
 __copyright__ = "Copyright 2021, University of New Haven Final Assignment"
 

@@ -74,10 +74,12 @@ class AddModifyPatientDialog:
 		self.f1 = Frame(top,bg=bg_color) 
 		if modify:
 			self.button_save = Button(self.f1, text="Update", width=9, command=self.modify)
+			self.button_close = Button(self.f1, text="SaveAll", width = 9, command=self.save_all)
 		else:
 			self.button_save = Button(self.f1, text="Save", width=9, command=self.save)
+			self.button_close = Button(self.f1, text="Close", width = 9, command=self.close)
 			
-		self.button_close = Button(self.f1, text="Close", width = 9, command=self.close)
+		
 		self.button_save.grid(row=0, column=0, pady=(5,5), padx=(10,10))
 		self.button_close.grid(row=0, column=1, pady=(5,5), padx=(10,10))
 		
@@ -125,20 +127,45 @@ class AddModifyPatientDialog:
 	#update index, next clicked. and set new values.
 	def next(self):
 		if self.index < (len(self.lst_of_patients_copy)-1):
+			#Let us give user notice in case modifications not saved
+			if self.check_if_modified():
+				if mbox.askokcancel("Warning", "Do you want save changes before moving?"):
+					self.modify()
 			self.index += 1
 			self.set_values()
 		
 	#update index, previous clicked. and set new values.
 	def prev(self):
 		if self.index > 0:
+			#Let us give user notice in case modifications not saved
+			if self.check_if_modified():
+				if mbox.askokcancel("Warning", "Do you want save changes before moving?"):
+					self.modify()
 			self.index -= 1
 			self.set_values()
+			
+	def check_if_modified(self):
+		if self.name_entry.get() != self.lst_of_patients_copy[self.index]['name']:
+			return True
+		elif self.lst_of_patients_copy[self.index]['address'] != self.address_entry.get():
+			return True
+		elif self.lst_of_patients_copy[self.index]['birthday'] != self.birthday_entry.get():
+			return True
+			
+		return False
 		
 	#close the add patient dialog . This is close button clicked.
-	#in case modify state, the close button click will update initial list and UI with changes.
 	def close(self):
-		#in case modify, and we modified like 10 patients. Update initial list. Note this will work always on close button, in case user closes the dialog with 'X' BUTTON on corner I am assuming
-		#he cancelled the modifications he did.
+		self.top.destroy()
+
+	#the save all button click will update initial list and UI with changes. and close the modify screen
+	def save_all(self):
+		#in case modify, and we modified like 10 patients. Update initial list. Note this will work always on save all button, 
+		# in case user closes the dialog with 'X' BUTTON on corner I am assuming
+		# he cancelled the modifications he did.
+		
+		#make sure to modify last patient opened on screen before saving all.
+		self.modify()
 		self.lst_of_patients = copy.deepcopy(self.lst_of_patients_copy)
 		self.function_update(self.lst_of_patients)
 		self.top.destroy()
