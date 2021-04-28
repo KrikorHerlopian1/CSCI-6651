@@ -11,7 +11,6 @@ from tkinter import *
 from tkinter import messagebox as mbox
 import copy
 import functions as func
-
 __author__ = "Krikor Herlopian"
 __copyright__ = "Copyright 2021, University of New Haven Final Assignment"
 
@@ -24,6 +23,9 @@ bg_color = '#D9D9D9'
 #add/modify a patient dialog
 class AddModifyPatientDialog:
 	def __init__(self, parent,lst_of_patients,function_update,modify=False):
+		"""
+			let us create the form in dialog here. Whether modify or add. 
+		"""
 		top = self.top = Toplevel(parent)
 		self.lst_of_patients = lst_of_patients
 		#we are passing update_list function from menu class as parameter here.
@@ -32,10 +34,9 @@ class AddModifyPatientDialog:
 		top.protocol("WM_DELETE_WINDOW", self.on_closing)
 		#set background color
 		top.configure(background=bg_color)
-		#deep copy of list of patients, when modifying we want to modify the copy up until user clicks close.
-		#Its only when the user clicks close button we want to reflect the changes on UI and original list.
+		#deep copy of list of patients, when modifying we want to modify the copy up until user clicks save all.
+		#Its only when the user clicks save all button we want to reflect the changes on UI and original list.
 		#We want to give user option to backtrack by clicking the X on top side of corner to undo changes.
-		
 		self.lst_of_patients_copy = copy.deepcopy(self.lst_of_patients)
 		#when modifying, modifications starts from index 0. Top of the list.
 		self.index = 0
@@ -73,7 +74,7 @@ class AddModifyPatientDialog:
 		#let us do this in frame ,to fit the two  buttons in the same row/column grid cell.
 		self.f1 = Frame(top,bg=bg_color) 
 		if modify:
-			self.button_save = Button(self.f1, text="Update", width=9, command=self.modify)
+			self.button_save = Button(self.f1, text="Update", width=9, command=self.modify_patient)
 			self.button_close = Button(self.f1, text="SaveAll", width = 9, command=self.save_all)
 		else:
 			self.button_save = Button(self.f1, text="Save", width=9, command=self.save)
@@ -99,24 +100,51 @@ class AddModifyPatientDialog:
 		else:
 			self.f1.grid(row=3, column = 1)
 		
-	#in case user clicked the X button on top side. Notify him that changes he updated will be lost. Instead he should click close button for updated changes to take effect
+	#in case user clicked the X button on top side. Notify him that changes he updated will be lost. Instead he should click save all button for updated changes to take effect
 	def on_closing(self):
 		if mbox.askokcancel("Quit", "Are you sure you want to quit? All new or updated changes will be lost?"):
 			self.top.destroy()
 		
-	#modify button clicked, modify in lst_of_patients copy and then when the close button is clicked update initial lst_of_patients and udpate main UI.
+	#modify button clicked
+	def modify_patient(self):
+		#validate form first, before proceeding to updating the current patient open on screen
+		if self.validate_form():
+			self.modify()
+	
+	#modify in lst_of_patients copy and then when the save all button is clicked update initial lst_of_patients and udpate main UI.
 	def modify(self):
 		self.lst_of_patients_copy[self.index]['name'] = self.name_entry.get()
 		self.lst_of_patients_copy[self.index]['address'] = self.address_entry.get()
 		self.lst_of_patients_copy[self.index]['birthday'] = self.birthday_entry.get()
 
-	
+	def validate_form(self):
+		"""
+			Male sure a name , address, and birthday are typed. in case of birthday make sure date is correct format.
+		"""
+		message = ''
+		if self.name_entry.get() == '':
+			message += 'Name cannot be empty\n'
+		if self.address_entry.get() == '':
+			message += 'Address cannot be empty\n'
+		if self.birthday_entry.get() == '':
+			message += 'Birthday cannot be empty\n'
+		elif not func.valid_date(self.birthday_entry.get()):
+			message += 'Birthday not valid\n'
+		if message:
+			#show popup of errors that need to be fixed
+			mbox.showinfo("Error", message)
+			return False
+			
+		return True
+	    		
 	#save button clicked, add them to lst_of_patients and update the initial dialog box.
 	def save(self):
-		json  = { "name": self.name_entry.get(), "address": self.address_entry.get(), "birthday": self.birthday_entry.get()}
-		self.lst_of_patients.append(json)
-		self.function_update(self.lst_of_patients)
-		self.top.destroy()
+		#validate form first, before proceeding to saving the new patient open on screen and closing the box + updating UI.
+		if self.validate_form():
+			json  = { "name": self.name_entry.get(), "address": self.address_entry.get(), "birthday": self.birthday_entry.get()}
+			self.lst_of_patients.append(json)
+			self.function_update(self.lst_of_patients)
+			self.top.destroy()
 		
 	#in case its modify	, we set the values on screen of patient we are editing.
 	def set_values(self):
@@ -130,7 +158,11 @@ class AddModifyPatientDialog:
 			#Let us give user notice in case modifications not saved
 			if self.check_if_modified():
 				if mbox.askokcancel("Warning", "Do you want save changes before moving?"):
-					self.modify()
+					#validate form first, before proceeding to modifying the current patient open on screen and moving to next patient
+					if self.validate_form():
+						self.modify()
+					else:
+						return
 			self.index += 1
 			self.set_values()
 		
@@ -140,11 +172,19 @@ class AddModifyPatientDialog:
 			#Let us give user notice in case modifications not saved
 			if self.check_if_modified():
 				if mbox.askokcancel("Warning", "Do you want save changes before moving?"):
-					self.modify()
+					#validate form first, before proceeding to modifying the current patient open on screen and moving to previous patient
+					if self.validate_form():
+						self.modify()
+					else:
+						return
 			self.index -= 1
 			self.set_values()
 			
 	def check_if_modified(self):
+		"""
+			We want to check if form was modified , in case user clicks previous or next.
+			We compare whether values in textfields differ from lst_of_patients_copy
+		"""
 		if self.name_entry.get() != self.lst_of_patients_copy[self.index]['name']:
 			return True
 		elif self.lst_of_patients_copy[self.index]['address'] != self.address_entry.get():
@@ -164,8 +204,10 @@ class AddModifyPatientDialog:
 		# in case user closes the dialog with 'X' BUTTON on corner I am assuming
 		# he cancelled the modifications he did.
 		
-		#make sure to modify last patient opened on screen before saving all.
-		self.modify()
-		self.lst_of_patients = copy.deepcopy(self.lst_of_patients_copy)
-		self.function_update(self.lst_of_patients)
-		self.top.destroy()
+		#validate form first, before proceeding to saving the current patient open on screen and closing the box + updating UI.
+		if self.validate_form():
+			#make sure to modify last patient opened on screen before saving all.
+			self.modify()
+			self.lst_of_patients = copy.deepcopy(self.lst_of_patients_copy)
+			self.function_update(self.lst_of_patients)
+			self.top.destroy()

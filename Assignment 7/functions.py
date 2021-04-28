@@ -6,6 +6,7 @@
 # Email Address: kherl1@unh.newhaven.edu
 # =============================================================================
 
+import datetime
 __author__ = "Krikor Herlopian"
 __copyright__ = "Copyright 2021, University of New Haven Final Assignment"
 
@@ -23,3 +24,17 @@ def center_window(root,width=200, height=150):
     y = (screen_height/2) - (height/2)
     root.geometry('%dx%d+%d+%d' % (width, height, x, y))
 
+def valid_date(self,inputDate):
+	"""
+		Check if date is valid. If its valid return true, else return false
+	"""
+	day,month,year = inputDate.split('/')
+	isValidDate = True
+	try :
+		datetime.datetime(int(year),int(month),int(day))
+	except ValueError :
+    	isValidDate = False
+	if(isValidDate) :
+		return True
+	else :
+    	return False

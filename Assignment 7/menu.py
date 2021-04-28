@@ -23,6 +23,9 @@ __copyright__ = "Copyright 2021, University of New Haven Final Assignment"
 
 class MainMenu(Menu):
 	def __init__(self,root,parent,scrollbar,bg_color,label_lst):
+		"""
+			We put all the file menu here and its submenus (open, new modify save, exit)
+		"""
 		Menu.__init__(self,parent)
 		self.root = root
 		self.lst_of_patients = []
@@ -58,8 +61,9 @@ class MainMenu(Menu):
 	#load the patients from file
 	def load_file(self):
 		with open(self.file_name, "r") as op:
+			#destroy all labels on screen, so that we set the listbox.
 			self.destroy_label()
-			#file is empty
+			# == 0 means file is empty
 			if os.stat(self.file_name).st_size == 0:
 				self.lst_of_patients = []
 			else:
@@ -67,20 +71,19 @@ class MainMenu(Menu):
 				#let us add listview to the screen. Since we dont know number of patients, we need to make it
 				# scrollable.
 				self.update_list()
+			#showing message that file is loaded successfully, just in case the file is empty and no more labels on screen. User can know he can add patients
 			mbox.showinfo("Success", "File Loaded Successfully.Proceed to adding and modifying")	
 	
 
 	#let us add listview to the screen. Since we dont know number of patients, we need to make it
 	# scrollable vertically. We might have 1 million patients. 	
 	def update_list(self,patients_lst=None):
-		
-		
-		#this case will happen, when patients_lst is passed from patient.py file. When user clicked close , or save on add.
+		#this case will happen, when patients_lst is passed from patient.py file. When user clicked save all , or save on add.
 		#we are passing update_list method later on as parameter to AddModifyPatientDialog
 		if patients_lst:
 			self.lst_of_patients = patients_lst
 			
-		#destroy the previous list, in case new patients file loaded.
+		#destroy the previous list_box, in case new patients file loaded or updating.
 		try:
 			if self.list_box:
 				self.list_box.destroy()
@@ -98,7 +101,7 @@ class MainMenu(Menu):
 	# if opened, show a dialog box to add new patient
 	def add_patient(self):
 		if self.file_name:
-			#we pass update_list function as parameter
+			#we pass update_list function as parameter.So that on new patient added, i update list_box here.
 			inputDialog = patient.AddModifyPatientDialog(self.root,self.lst_of_patients, self.update_list)
 			self.root.wait_window(inputDialog.top)
 		else:
@@ -118,7 +121,8 @@ class MainMenu(Menu):
 			mbox.showinfo("Open a patients file first", "Open a patients file first")	
 
 	# show message you cant save without opening a patient file first.
-	# if opened, show a dialog box to modify patient
+	# or in case a patient file is opened but no patients  in it, inform user that there needs to be patient added on list already in order to modify
+	# if opened and patients exist, show a dialog box to modify patient
 	def modify_patient(self):
 		if self.file_name and len(self.lst_of_patients) > 0:
 			#we pass update_list function as parameter
@@ -127,7 +131,7 @@ class MainMenu(Menu):
 		else:
 			mbox.showinfo("ERROR", "Open a patients file first or add patients if file opened")					
 
-	#INITIALLY the message is load patients file, we want to destroy that label and load list of patients
+	#INITIALLY the message is load patients file, we want to destroy that label and load list of patients in list_box
 	def destroy_label(self):
 		try:
 			#destroy all labels, remove labels from screen.Especially the "Please load patient file" label 
