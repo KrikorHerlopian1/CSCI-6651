@@ -11,6 +11,7 @@ from tkinter import *
 import tkinter.filedialog
 from tkinter import messagebox as mbox
 import json
+import os
 import functions as func
 import patient as patient
 __author__ = "Krikor Herlopian"
@@ -56,15 +57,22 @@ class MainMenu(Menu):
 	#load the patients from file
 	def load_file(self):
 		with open(self.file_name, "r") as op:
-			self.lst_of_patients = json.load(op)
 			self.destroy_label()
-			#let us add listview to the screen. Since we dont know number of patients, we need to make it
-			# scrollable.
-			self.update_list()
-		
+			#file is empty
+			if os.stat(self.file_name).st_size == 0:
+				self.lst_of_patients = []
+			else:
+				self.lst_of_patients = json.load(op)	
+				#let us add listview to the screen. Since we dont know number of patients, we need to make it
+				# scrollable.
+				self.update_list()
+			mbox.showinfo("Success", "File Loaded Successfully.Proceed to adding and modifying")	
+	
+
 	#let us add listview to the screen. Since we dont know number of patients, we need to make it
 	# scrollable vertically. We might have 1 million patients. 	
 	def update_list(self,patients_lst=None):
+		
 		
 		#this case will happen, when patients_lst is passed from patient.py file. When user clicked close , or save on add.
 		#we are passing update_list method later on as parameter to AddModifyPatientDialog
@@ -111,12 +119,12 @@ class MainMenu(Menu):
 	# show message you cant save without opening a patient file first.
 	# if opened, show a dialog box to modify patient
 	def modify_patient(self):
-		if self.file_name:
+		if self.file_name and len(self.lst_of_patients) > 0:
 			#we pass update_list function as parameter
 			inputDialog = patient.AddModifyPatientDialog(self.root, self.lst_of_patients,self.update_list,True)
 			self.root.wait_window(inputDialog.top)
 		else:
-			mbox.showinfo("Open a patients file first", "Open a patients file first")				
+			mbox.showinfo("ERROR", "Open a patients file first or add patients if file opened")					
 
 	#INITIALLY the message is load patients file, we want to destroy that label and load list of patients
 	def destroy_label(self):

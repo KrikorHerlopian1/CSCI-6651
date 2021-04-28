@@ -9,6 +9,9 @@
 __author__ = "Krikor Herlopian"
 __copyright__ = "Copyright 2021, University of New Haven Final Assignment"
 
+"""
+	Functions used multiple places. Like center_window is used many places to center the screens ( dialogs, original screen etc)
+"""
 #center the window, tkinter screen. size specified for screen too.
 def center_window(root,width=200, height=150):
     # get screen width and height

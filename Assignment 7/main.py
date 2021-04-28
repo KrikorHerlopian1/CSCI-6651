@@ -18,13 +18,17 @@ import functions as func
 __author__ = "Krikor Herlopian"
 __copyright__ = "Copyright 2021, University of New Haven Final Assignment"
 
+"""
+	You need to run this file to run the application. python3 main.py
+"""
 
 #background color of window, and also listbox. Background color everywhere.
 bg_color = '#D9D9D9'
 root = Tk()
+#we need scrolling, we could have one million patients.
 scrollbar = Scrollbar(root)
 scrollbar.pack( side = RIGHT, fill = Y )
-#When patient file opened we want to remove all labels on screen and show listbox instead. pass this label_lst to menu  to destroy it.
+#When patient file opened we want to remove all labels on screen and show listbox instead. pass this label_lst to menu  to destroy it when loading patients file.
 label_lst = []
 #this will be the label at start, before user loads new patient file.
 label = Label( root, text="Please load patient file", fg='#000000', bg=bg_color)
