@@ -24,7 +24,7 @@ bg_color = '#D9D9D9'
 root = Tk()
 scrollbar = Scrollbar(root)
 scrollbar.pack( side = RIGHT, fill = Y )
-#make it global, when patient file opened we want to remove all labels on screen and show listbox instead.
+#When patient file opened we want to remove all labels on screen and show listbox instead. pass this label_lst to menu  to destroy it.
 label_lst = []
 #this will be the label at start, before user loads new patient file.
 label = Label( root, text="Please load patient file", fg='#000000', bg=bg_color)
