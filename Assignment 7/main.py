@@ -26,7 +26,10 @@ class AddModifyPatientDialog:
 		top.protocol("WM_DELETE_WINDOW", self.on_closing)
 		#set background color
 		top.configure(background=bg_color)
-		#copy of list of patients, when modifying we want to modify the copy up until user clicks close.
+		#deep copy of list of patients, when modifying we want to modify the copy up until user clicks close.
+		#Its only when the user clicks close button we want to reflect the changes on UI and original list.
+		#We want to give user option to backtrack by clicking the X on top side of corner to undo changes.
+		
 		self.lst_of_patients_copy = copy.deepcopy(lst_of_patients)
 		#when modifying, modifications starts from index 0. Top of the list.
 		self.index = 0
@@ -72,9 +75,9 @@ class AddModifyPatientDialog:
 		self.button_save.grid(row=0, column=0, pady=(5,5), padx=(10,10))
 		self.button_close.grid(row=0, column=1, pady=(5,5), padx=(10,10))
 		
-		#fit in same row/column two buttons together. In case its modify patient fit on 5th row, in case add patient on 4th row. 
-		#if modify also add prev next buttons on 4th row this time
-		#note rows start from Zero.
+		#fit in same row/column two buttons Save/Close together. In case its modify patient fit two buttons Update/Close on 5th row, in case add patient fit two buttons Save/Close on 4th row. 
+		#if modify also add prev/next buttons on 4th row this time
+		#note rows start from Zero. So 5th row = (row=4)
 		if modify:
 			self.f1.grid(row=4, column = 1)
 			self.f2 = Frame(top,bg=bg_color) 
@@ -127,7 +130,8 @@ class AddModifyPatientDialog:
 			self.index -= 1
 			self.set_values()
 		
-	#close the add patient dialog 
+	#close the add patient dialog . This is close button clicked.
+	#in case modify state, the close button click will update initial list and UI with changes.
 	def close(self):
 		#in case modify, and we modified like 10 patients. Update initial list. Note this will work always on close button, in case user closes the dialog with 'X' BUTTON on corner I am assuming
 		#he cancelled the modifications he did.
@@ -191,7 +195,7 @@ def load_file():
 		update_list()
 		
 #let us add listview to the screen. Since we dont know number of patients, we need to make it
-# scrollable.	
+# scrollable vertically. We might have 1 million patients. 	
 def update_list():
 	global list_box, lst_of_patients,scrollbar
 	#destroy the previous list, in case new patients file loaded.
@@ -201,6 +205,7 @@ def update_list():
 	except:
 		pass
 	list_box = Listbox(root, yscrollcommand = scrollbar.set , width= 400, bg=bg_color)
+	#loop over list of patients, and insert them to listbox
 	for patient in lst_of_patients:
 		list_box.insert(END, patient['name']+","+patient['address']+","+patient['birthday'])
 	list_box.pack( side = LEFT, fill = BOTH )
@@ -223,8 +228,8 @@ def save_patient():
 		# we are saving json format
 		with open(file_name, 'w') as outfile:
 			json.dump(lst_of_patients, outfile)
-		#show message it saved successfully
-		mbox.showinfo("Patients Saved", "successful")
+			#show message it saved successfully
+			mbox.showinfo("Patients Saved", "successful")
 	else:	
 		#open a patients file first before proceeding.
 		mbox.showinfo("Open a patients file first", "Open a patients file first")	
@@ -242,6 +247,7 @@ def modify_patient():
 def destroy_label():
 	global label_lst
 	try:
+		#destroy all labels, remove labels from screen.Especially the "Please load patient file" label 
 		for label in label_lst[:]:
 			label.destroy()
 			label_lst.remove(label)
@@ -250,7 +256,7 @@ def destroy_label():
 
 menubar = Menu(root)
 
-#add file menu, with its submenus.
+#add file menu, with its submenus(Open, New, Modify, Save, Exit).
 filemenu = Menu(menubar, tearoff=0)
 filemenu.add_command(label="Open", command=open_file)
 filemenu.add_command(label="New", command=add_patient)
@@ -265,6 +271,7 @@ filemenuTwo = Menu(menubar, tearoff=0)
 menubar.add_cascade(label="Help", menu=filemenuTwo)
 
 root.config(menu=menubar)
+#center the window, and initial size 400*300
 center_window(400,300)
 #background of the window
 root.configure(background=bg_color)
@@ -272,11 +279,11 @@ root.configure(background=bg_color)
 #make it global, when patient file opened we want to remove all labels on screen and show listbox instead.
 global label_lst
 label_lst = []
+#this will be the label at start, before user loads new patient file.
 label = Label( root, text="Please load patient file", fg='#000000', bg=bg_color)
 label_lst.append(label)
 label.pack(side=TOP, anchor=NW)
 root.title("My Patient Program")
-
 root.mainloop()
 
 
