@@ -100,7 +100,7 @@ class AddModifyPatientDialog:
 		json  = { "name": self.name_entry.get(), "address": self.address_entry.get(), "birthday": self.birthday_entry.get()}
 		lst_of_patients.append(json)
 		update_list()
-		self.close()
+		self.top.destroy()
 		
 	#in case its modify	, we set the values on screen of patient we are editing.
 	def set_values(self):
