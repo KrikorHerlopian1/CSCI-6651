@@ -16,7 +16,8 @@ import patient as patient
 __author__ = "Krikor Herlopian"
 __copyright__ = "Copyright 2021, University of New Haven Final Assignment"
 
-
+#menu class . File ( Open, New, Modify, Save, Exit). Help.
+#All clicks handled here
 
 class MainMenu(Menu):
 	def __init__(self,root,parent,scrollbar,bg_color,label_lst):
@@ -41,6 +42,7 @@ class MainMenu(Menu):
 		filemenuTwo = Menu(self, tearoff=0)
 		self.add_cascade(label="Help", menu=filemenuTwo)
 
+	#Open  clicked, let user choose a json patient file to load.
 	def open_file(self):
 		try:
 			#for now you can only open .json files.
@@ -63,9 +65,13 @@ class MainMenu(Menu):
 	#let us add listview to the screen. Since we dont know number of patients, we need to make it
 	# scrollable vertically. We might have 1 million patients. 	
 	def update_list(self,patients_lst=None):
-		#destroy the previous list, in case new patients file loaded.
+		
+		#this case will happen, when patients_lst is passed from patient.py file. When user clicked close , or save on add.
+		#we are passing update_list method later on as parameter to AddModifyPatientDialog
 		if patients_lst:
 			self.lst_of_patients = patients_lst
+			
+		#destroy the previous list, in case new patients file loaded.
 		try:
 			if self.list_box:
 				self.list_box.destroy()

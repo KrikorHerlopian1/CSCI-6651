@@ -6,6 +6,10 @@
 # Email Address: kherl1@unh.newhaven.edu
 # =============================================================================
 
+#main class, Just call Menu class and put a label on screen to load a patient file.
+#for menu class make sure to pass label, in order to destroy it when we want to load the list.
+# we making sure screen is scrollable, we could have a million patient.
+
 
 from tkinter import *
 import menu as menu

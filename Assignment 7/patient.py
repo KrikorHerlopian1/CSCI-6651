@@ -15,6 +15,7 @@ import functions as func
 __author__ = "Krikor Herlopian"
 __copyright__ = "Copyright 2021, University of New Haven Final Assignment"
 
+# Add or Modify patient dialog here
 
 #background color of window, and also listbox. Background color everywhere.
 bg_color = '#D9D9D9'
@@ -25,7 +26,7 @@ class AddModifyPatientDialog:
 	def __init__(self, parent,lst_of_patients,function_update,modify=False):
 		top = self.top = Toplevel(parent)
 		self.lst_of_patients = lst_of_patients
-		#we are passing update_list function as parameter from menu.
+		#we are passing update_list function from menu class as parameter here.
 		self.function_update = function_update
 		#in case user clicks the top right X button to close, call on_closing function
 		top.protocol("WM_DELETE_WINDOW", self.on_closing)
