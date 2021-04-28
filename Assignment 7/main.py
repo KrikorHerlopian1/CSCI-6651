@@ -17,7 +17,7 @@ import copy
 bg_color = '#D9D9D9'
 
 
-#add a patient dialog
+#add/modify a patient dialog
 class AddModifyPatientDialog:
 	def __init__(self, parent,modify=False):
 		global lst_of_patients
